@@ -20,7 +20,7 @@ public class SessionDTO {
     @JsonProperty("student")
     private StudentDTO studentDTO;
     @NotNull(message = "Classroom must not be null")
-    @JsonProperty("class_room")
+    @JsonProperty("classroom")
     private ClassRoomDTO classRoomDTO;
     @NotNull(message = "Mentor must not be null")
     @JsonProperty("mentor")
@@ -37,4 +37,7 @@ public class SessionDTO {
     @NotNull(message = "Session status must not be null")
     @JsonProperty("session_status")
     private Constants.SessionStatus sessionStatus;
+    @NotNull(message = "Payment reciept must not be null")
+    @JsonProperty("payment_reciept")
+    private String paymentReciept;
 }

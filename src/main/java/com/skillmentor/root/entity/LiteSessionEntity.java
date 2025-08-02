@@ -7,12 +7,20 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "session")
+@SQLDelete(sql = "UPDATE session SET deleted_at = now() WHERE session_id = ?")
+@Where(clause = "deleted_at IS NULL")
 @NoArgsConstructor
 @AllArgsConstructor
 public class LiteSessionEntity {
@@ -42,4 +50,19 @@ public class LiteSessionEntity {
     @Column(name = "session_status", nullable = false)
     @Enumerated(EnumType.STRING) // Stores enum as a string in the database
     private Constants.SessionStatus sessionStatus = Constants.SessionStatus.PENDING;
+
+    @Column(name = "payment_reciept", nullable = false)
+    private String paymentReciept;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private Timestamp updatedAt;
+
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
 }

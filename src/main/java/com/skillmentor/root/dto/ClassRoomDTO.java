@@ -24,6 +24,7 @@ public class ClassRoomDTO {
     @NotNull(message = "class_image must not be null")
     @JsonProperty("class_image")
     private String classImage;
+    @NotNull(message = "mentor must not be null")
     @JsonProperty("mentor")
     private MentorDTO mentorDTO;
 }

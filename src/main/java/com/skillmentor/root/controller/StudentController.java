@@ -62,11 +62,9 @@ public class StudentController {
     @PreAuthorize(Constants.ADMIN_ROLE_PERMISSION)
     @GetMapping(value = "/student", produces = Constants.APPLICATION_JSON)
     public ResponseEntity<List<StudentDTO>> getAllStudents(
-            @Parameter(description = "Filter by address") @RequestParam(required = false) List<String> addresses,
-            @Parameter(description = "Filter by age") @RequestParam(required = false) List<Integer> ages,
-            @Parameter(description = "Filter by first name") @RequestParam(required = false) List<String> firstNames
+            @Parameter(description = "Student search text", required = false) @RequestParam(name = "search", required = false) String search
     ) {
-        final List<StudentDTO> studentDTOS = studentService.getAllStudents(addresses, ages, firstNames);
+        final List<StudentDTO> studentDTOS = studentService.getAllStudents(search);
         log.info("Get All Students......");
         return new ResponseEntity<>(studentDTOS, HttpStatus.OK);
     }

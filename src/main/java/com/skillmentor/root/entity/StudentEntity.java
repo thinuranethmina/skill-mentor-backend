@@ -8,7 +8,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,4 +51,16 @@ public class StudentEntity {
     private Integer age;
     @OneToMany(mappedBy = "studentEntity", fetch = FetchType.EAGER)
     private List<SessionEntity> sessionEntityList = new ArrayList<>();
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private Timestamp updatedAt;
+
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
 }

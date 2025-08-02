@@ -1,5 +1,6 @@
 package com.skillmentor.root.repository;
 
+import com.skillmentor.root.common.Constants;
 import com.skillmentor.root.entity.SessionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,13 @@ public interface SessionRepository extends JpaRepository<SessionEntity, Integer>
             "WHERE s.start_time BETWEEN :startTime AND :endTime  \n" +
             "GROUP BY m.mentor_id;", nativeQuery = true)
     List<Object> findMentorPayments(@Param("startTime") String startTime, @Param("endTime") String endTime);
+
+
+    List<SessionEntity> findBySessionStatus(Constants.SessionStatus status);
+
+    List<SessionEntity> findByClassRoomEntity_ClassRoomIdAndSessionStatusIn(
+            Integer classRoomId,
+            List<Constants.SessionStatus> statuses
+    );
+
 }

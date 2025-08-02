@@ -23,7 +23,7 @@ import java.util.Base64;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private static final String JWKS_URL = "https://exact-titmouse-99.clerk.accounts.dev/.well-known/jwks.json";
+    private static final String JWKS_URL = "https://major-cicada-68.clerk.accounts.dev/.well-known/jwks.json";
 
     // TODO: Remove after demonstration of swagger as endpoint is insecure
 //    @Bean
@@ -52,6 +52,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/academic/classroom/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/academic/mentor").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/academic/mentor/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(clerkPublicKey()), UsernamePasswordAuthenticationFilter.class);

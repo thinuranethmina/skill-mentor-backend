@@ -26,7 +26,7 @@ public interface StudentService {
      * @param ages the age to filter students by (optional)
      * @return a list of StudentDTO objects representing the students
      */
-    List<StudentDTO> getAllStudents(List<String> addresses, List<Integer> ages, List<String> firstNames);
+    List<StudentDTO> getAllStudents(String search);
 
     /**
      * Retrieves a student by their ID.

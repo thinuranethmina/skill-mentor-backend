@@ -2,6 +2,7 @@ package com.skillmentor.root.service;
 
 import com.skillmentor.root.dto.MentorDTO;
 import com.skillmentor.root.exception.MentorException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,14 +17,14 @@ public interface MentorService {
      * @param mentorDTO the data transfer object containing mentor details
      * @return the created MentorDTO object
      */
-    MentorDTO createMentor(MentorDTO mentorDTO) throws MentorException;
+    MentorDTO createMentor(MentorDTO mentorDTO, MultipartFile file) throws MentorException;
 
     /**
      * Retrieves all mentors.
      *
      * @return a list of MentorDTO objects representing all mentors
      */
-    List<MentorDTO> getAllMentors(List<String> firstNames, List<String> subjects);
+    List<MentorDTO> getAllMentors(String search);
 
     /**
      * Retrieves a mentor by their ID.
@@ -47,7 +48,7 @@ public interface MentorService {
      * @param mentorDTO the data transfer object containing updated mentor details
      * @return a MentorDTO object representing the updated mentor
      */
-    MentorDTO updateMentorById(MentorDTO mentorDTO) throws MentorException;
+    MentorDTO updateMentorById(MentorDTO mentorDTO, MultipartFile mentor_image) throws MentorException;
 
     /**
      * Deletes a mentor by their ID.

@@ -1,5 +1,6 @@
 package com.skillmentor.root.service;
 import com.skillmentor.root.dto.ClassRoomDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -13,7 +14,9 @@ public interface ClassRoomService {
      * Retrieves all classrooms filtered by optional parameters.
      * @return a list of {@link ClassRoomDTO} that match the filters
      */
-    List<ClassRoomDTO> getAllClassRooms();
+    List<ClassRoomDTO> getAllClassRooms(String search, Integer mentorId);
+
+    List<ClassRoomDTO> getClassRoomsByMentor(Integer id);
 
     /**
      * Finds a classroom by its ID.
@@ -37,7 +40,7 @@ public interface ClassRoomService {
      * @param classRoomDTO the updated classroom details
      * @return the updated {@link ClassRoomDTO}, or {@code null} if the classroom does not exist
      */
-    ClassRoomDTO updateClassRoom(ClassRoomDTO classRoomDTO);
+    ClassRoomDTO updateClassRoom(ClassRoomDTO classRoomDTO, MultipartFile classRoomImage);
 
     /**
      * Creates a new classroom with the provided details.
@@ -45,5 +48,5 @@ public interface ClassRoomService {
      * @param classRoomDTO the new classroom data
      * @return the created {@link ClassRoomDTO} with generated ID
      */
-    ClassRoomDTO createClassRoom(ClassRoomDTO classRoomDTO);
+    ClassRoomDTO createClassRoom(ClassRoomDTO classRoomDTO, MultipartFile classRoomImage);
 }

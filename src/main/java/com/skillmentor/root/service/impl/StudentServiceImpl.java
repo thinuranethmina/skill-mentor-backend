@@ -62,14 +62,31 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional(rollbackFor = Exception.class)
 //    @Cacheable(value = "allStudentsCache", key = "'allStudents'")
-    public List<StudentDTO> getAllStudents(final List<String> addresses, final List<Integer> ages, final List<String> firstNames) {
-        log.info("Fetching all students with filters: addresses={}, ages={}, firstNames={}", addresses, ages, firstNames);
+    public List<StudentDTO> getAllStudents(String search) {
+        log.info("Fetching all students with filters: search={}", search);
         final List<StudentEntity> studentEntities = studentRepository.findAll();
         List<StudentDTO> result = studentEntities
                 .stream()
-                .filter(student -> addresses == null || addresses.contains(student.getAddress()))
-                .filter(student -> ages == null || ages.contains(student.getAge()))
-                .filter(student -> firstNames == null || firstNames.contains(student.getFirstName()))
+                .filter(student -> {
+                    if (student.getDeletedAt() != null) {
+                        return false;
+                    }
+
+                    boolean searchMatches = true;
+                    if (search != null && !search.trim().isEmpty()) {
+                        String lowerSearch = search.toLowerCase();
+                        String fullName = ((student.getFirstName() != null ? student.getFirstName() : "") + " " +
+                                (student.getLastName() != null ? student.getLastName() : "")).toLowerCase();
+
+                        searchMatches =(fullName != null && fullName.toLowerCase().contains(lowerSearch)) ||
+                                (student.getClerkStudentId() != null && student.getClerkStudentId().toLowerCase().contains(lowerSearch)) ||
+                                (student.getEmail() != null && student.getEmail().toLowerCase().contains(lowerSearch)) ||
+                                (student.getAddress() != null && student.getAddress().toLowerCase().contains(lowerSearch)) ||
+                                (student.getPhoneNumber() != null && student.getPhoneNumber().toLowerCase().contains(lowerSearch));
+                    }
+
+                    return searchMatches;
+                })
                 .map(StudentEntityDTOMapper::map)
                 .toList();
         log.info("Found {} students after filtering from data-source: {}", result.size(), this.datasource);

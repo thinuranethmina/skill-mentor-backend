@@ -3,6 +3,7 @@ package com.skillmentor.root.service;
 import com.skillmentor.root.common.Constants;
 import com.skillmentor.root.dto.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,15 +21,14 @@ public interface SessionService {
      * @param sessionDTO the session data to be created
      * @return the created session with its generated ID and saved values
      */
-    SessionLiteDTO createSession(SessionLiteDTO sessionDTO);
+    SessionLiteDTO createSession(SessionLiteDTO sessionDTO, MultipartFile file);
 
     /**
      * Retrieves all session records with student, mentor, and classroom details.
      *
      * @return a list of all sessions
      */
-    List<SessionDTO> getAllSessions();
-
+    List<SessionDTO> getAllSessions(String search, List<Constants.SessionStatus> status, Integer classId, Integer studentId, Integer mentorId);
     /**
      * Retrieves a list of session audit records.
      * This typically includes detailed info about each session for reporting or auditing.
@@ -56,4 +56,8 @@ public interface SessionService {
      * @return the updated session
      */
     SessionDTO updateSessionStatus(Integer sessionId, Constants.SessionStatus sessionStatus);
+    SessionDTO updateSession(SessionDTO sessionDTO);
+
+    SessionDTO deleteSession(Integer sessionId);
+
 }

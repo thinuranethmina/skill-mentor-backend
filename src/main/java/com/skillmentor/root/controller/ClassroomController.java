@@ -1,7 +1,10 @@
 package com.skillmentor.root.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skillmentor.root.common.Constants;
 import com.skillmentor.root.dto.ClassRoomDTO;
+import com.skillmentor.root.dto.MentorDTO;
 import com.skillmentor.root.service.ClassRoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,16 +13,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Validated
 @RestController
+@Slf4j
 @RequestMapping(value = "/academic")
 @Tag(name = "Classroom Management", description = "Endpoints for managing classrooms and their relationships")
 public class ClassroomController {
@@ -39,11 +45,14 @@ public class ClassroomController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PreAuthorize(Constants.ADMIN_ROLE_PERMISSION)
-    @PostMapping(value = "/classroom", consumes = Constants.APPLICATION_JSON, produces = Constants.APPLICATION_JSON)
+    @PostMapping(value = "/classroom", consumes = Constants.MULTIPART_FORM_DATA, produces = Constants.APPLICATION_JSON)
     public ResponseEntity<ClassRoomDTO> createClassroom(
             @Parameter(description = "Classroom details to create", required = true)
-            @Valid @RequestBody ClassRoomDTO classroomDTO) {
-        final ClassRoomDTO savedDTO = classroomService.createClassRoom(classroomDTO);
+            @RequestPart String classroomJson,
+            @Parameter(description = "Classroom image", required = true)
+            @RequestPart MultipartFile classRoomImage) {
+
+        final ClassRoomDTO savedDTO = classroomService.createClassRoom(getClassroomDTO(classroomJson), classRoomImage);
         return ResponseEntity.ok(savedDTO);
     }
 
@@ -55,8 +64,11 @@ public class ClassroomController {
     })
 //    @PreAuthorize(Constants.ADMIN_ROLE_PERMISSION) // TODO: Change to STUDENT_ROLE_PERMISSION after configurations
     @GetMapping(value = "/classroom", produces = Constants.APPLICATION_JSON)
-    public ResponseEntity<List<ClassRoomDTO>> getAllClassrooms() {
-        final List<ClassRoomDTO> classroomDTOS = classroomService.getAllClassRooms();
+    public ResponseEntity<List<ClassRoomDTO>> getAllClassrooms(
+            @Parameter(description = "Session mentor id", required = false) @RequestParam(name = "mentorId", required = false) Integer mentorId,
+            @Parameter(description = "Classroom search text", required = false) @RequestParam(name = "search", required = false) String search
+    ) {
+        final List<ClassRoomDTO> classroomDTOS = classroomService.getAllClassRooms(search, mentorId);
         return ResponseEntity.ok(classroomDTOS);
     }
 
@@ -84,11 +96,14 @@ public class ClassroomController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PreAuthorize(Constants.ADMIN_ROLE_PERMISSION)
-    @PutMapping(value = "/classroom", consumes = Constants.APPLICATION_JSON, produces = Constants.APPLICATION_JSON)
+    @PutMapping(value = "/classroom", consumes = Constants.MULTIPART_FORM_DATA, produces = Constants.APPLICATION_JSON)
     public ResponseEntity<ClassRoomDTO> updateClassroom(
             @Parameter(description = "Classroom details to update", required = true)
-            @Valid @RequestBody ClassRoomDTO classroomDTO) {
-        final ClassRoomDTO classroom = classroomService.updateClassRoom(classroomDTO);
+            @RequestPart String classroomJson,
+            @Parameter(description = "Classroom image", required = false)
+            @RequestPart(required = false) MultipartFile classRoomImage) {
+
+        final ClassRoomDTO classroom = classroomService.updateClassRoom(getClassroomDTO(classroomJson), classRoomImage);
         return ResponseEntity.ok(classroom);
     }
 
@@ -106,5 +121,17 @@ public class ClassroomController {
             @PathVariable @Min(value = 1, message = "Classroom ID must be positive") Integer id) {
         final ClassRoomDTO classroom = classroomService.deleteClassRoomById(id);
         return ResponseEntity.ok(classroom);
+    }
+
+    private ClassRoomDTO getClassroomDTO(String classsroomJson) {
+        ClassRoomDTO classRoomDTO = new ClassRoomDTO();
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            classRoomDTO = objectMapper.readValue(classsroomJson, ClassRoomDTO.class);
+        } catch(JsonProcessingException e) {
+            log.info("Exception in converting string to JSON : {}", e.getMessage());
+        }
+
+        return classRoomDTO;
     }
 }

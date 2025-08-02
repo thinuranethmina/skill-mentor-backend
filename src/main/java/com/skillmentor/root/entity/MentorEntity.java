@@ -1,5 +1,6 @@
 package com.skillmentor.root.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -8,7 +9,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +24,7 @@ import java.util.List;
 @Table(name = "mentor")
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE mentor SET deleted_at = now() WHERE id = ?")
 public class MentorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +68,21 @@ public class MentorEntity {
     @NotNull(message = "Mentor image must not be null")
     @Column(name = "mentor_image", nullable = false)
     private String mentorImage;
+    @NotBlank(message = "Bio must not be blank")
+    @Column(name = "bio", columnDefinition = "TEXT" ,nullable = false)
+    private String bio;
+
     @OneToMany(mappedBy = "mentorEntity", fetch = FetchType.EAGER)
     private List<SessionEntity> sessionEntityList = new ArrayList<>();
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 }

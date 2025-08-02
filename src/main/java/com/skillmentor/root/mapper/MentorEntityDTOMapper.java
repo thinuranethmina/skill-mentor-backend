@@ -19,6 +19,7 @@ public class MentorEntityDTOMapper {
         mentorDTO.setSubject(mentorEntity.getSubject());
         mentorDTO.setMentorImage(mentorEntity.getMentorImage());
         mentorDTO.setQualification(mentorEntity.getQualification());
+        mentorDTO.setBio(mentorEntity.getBio());
         return mentorDTO;
     }
 
@@ -37,6 +38,7 @@ public class MentorEntityDTOMapper {
         mentorEntity.setSubject(mentorDTO.getSubject());
         mentorEntity.setMentorImage(mentorDTO.getMentorImage());
         mentorEntity.setQualification(mentorDTO.getQualification());
+        mentorEntity.setBio(mentorDTO.getBio());
         return mentorEntity;
     }
 }
