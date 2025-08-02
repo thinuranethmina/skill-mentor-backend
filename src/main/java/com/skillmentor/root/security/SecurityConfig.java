@@ -52,7 +52,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/academic/classroom/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/academic/mentor").permitAll()
                         .requestMatchers(HttpMethod.GET, "/academic/mentor/**").permitAll()
                         .anyRequest().authenticated()
                 )
