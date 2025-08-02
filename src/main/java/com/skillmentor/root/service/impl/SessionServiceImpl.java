@@ -111,7 +111,7 @@ public class SessionServiceImpl implements SessionService {
 
                     return statusMatches && searchMatches && classIdMatches && studentIdMatches && mentortIdMatches;
                 })
-                .filter(session-> session.getDeletedAt()==null && session.getClassRoomEntity().getDeletedAt()==null)
+                .filter(session-> session.getDeletedAt()==null)
                 .sorted(Comparator.comparing(SessionEntity::getStartTime).reversed())
                 .map(SessionDTOEntityMapper::map).collect(Collectors.toList());
     }
@@ -145,7 +145,7 @@ public class SessionServiceImpl implements SessionService {
         List<SessionEntity> sessions = sessionRepository.findAll();
         return sessions.stream()
                 .filter(session -> session.getStudentEntity().getClerkStudentId().equals(studentClerkId))
-                .filter(session-> session.getDeletedAt()==null && session.getClassRoomEntity().getDeletedAt()==null)
+                .filter(session-> session.getDeletedAt()==null)
                 .map(SessionDTOEntityMapper::map)
                 .toList();
     }
